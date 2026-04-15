@@ -1,0 +1,62 @@
+# Environment & secrets
+.env
+*.env
+.alpha_engine.env
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+data/portfolio.db
+data/*.db-shm
+data/*.db-wal
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+.Python
+
+# Logs
+logs/
+*.log
+!logs/.gitkeep
+
+# Trade plan output
+out/*.txt
+out/*.csv
+!out/.gitkeep
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Backups
+*.bak
+*.bak_*
+*.backup
