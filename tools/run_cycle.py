@@ -46,7 +46,7 @@ def log_cron_run(engine, run_date: str, status: str, steps: list, error: str = "
         pass
 
 
-def is_biweekly_friday(today: date, anchor_str: str = "2026-02-13") -> bool:
+def is_biweekly_friday(today: date, anchor_str: str = os.getenv("FIRST_REBALANCE_DATE", "2026-01-02")) -> bool:
     anchor = datetime.strptime(anchor_str, "%Y-%m-%d").date()
     if today.weekday() != 4:
         return False
@@ -68,7 +68,7 @@ def get_anchor(engine) -> str:
                 return row[0]
     except Exception:
         pass
-    return "2026-02-13"
+    return os.getenv("FIRST_REBALANCE_DATE", "2026-01-02")
 
 
 def run_step(name: str, fn, steps_done: list, errors: list):

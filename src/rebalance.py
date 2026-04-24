@@ -32,7 +32,13 @@ from src.db import get_engine
 
 ET = pytz.timezone("America/New_York")
 NEXT_REBALANCE_KEY = "next_rebalance_date"
-FIRST_REBALANCE_DATE = "2026-02-13"
+FIRST_REBALANCE_DATE = os.getenv("FIRST_REBALANCE_DATE")
+if not FIRST_REBALANCE_DATE:
+    raise ValueError(
+        "FIRST_REBALANCE_DATE env var must be set to a Friday in YYYY-MM-DD format. "
+        "This is the anchor date for the biweekly rebalance schedule — a wrong or "
+        "missing value would silently misalign every rebalance. See .env.example."
+    )
 
 # Dynamic hold count parameters
 MIN_POSITION_DOLLARS = 50.0
@@ -150,9 +156,9 @@ def compute_inverse_vol_weights(conn, symbols: list, asof_date: str) -> dict:
 def dedupe_share_classes(scored: list) -> list:
     keep = dict(scored)
     if "GOOG" in keep and "GOOGL" in keep:
-        del keep["GOOG"] if keep["GOOG"] < keep["GOOGL"] else keep["GOOGL"]
+        del keep["GOOG" if keep["GOOG"] < keep["GOOGL"] else "GOOGL"]
     if "BRK-A" in keep and "BRK-B" in keep:
-        del keep["BRK-A"] if keep["BRK-A"] < keep["BRK-B"] else keep["BRK-B"]
+        del keep["BRK-A" if keep["BRK-A"] < keep["BRK-B"] else "BRK-B"]
     return sorted(keep.items(), key=lambda x: x[1], reverse=True)
 
 

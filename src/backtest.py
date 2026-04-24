@@ -25,7 +25,7 @@ MIN_TRADE_DOLLARS = 10.0
 CASH_RESERVE = 5.00
 MAX_BUY_FRACTION_OF_CONTRIB = 0.50
 
-# Backtest-only contribution fallback (so you can backtest 2016-2026 even if your real schedule starts 2026-02-13)
+# Backtest-only contribution fallback (so you can backtest 2016-2026 even if your real schedule starts 2026-01-02)
 DEFAULT_BACKTEST_CONTRIB = 200.0  # change this for research runs as desired
 
 @dataclass
@@ -194,7 +194,7 @@ def get_contrib_amount(conn, d: str) -> float:
 def main():
     name = "bt_realistic_v1"
 
-    # For 10y research prior to 2026-02-13 real start:
+    # For 10y research prior to 2026-01-02 real start:
     anchor = date(2016, 1, 8)   # Friday anchor near start
     start_date = "2016-01-01"
     end_date   = "2026-02-11"

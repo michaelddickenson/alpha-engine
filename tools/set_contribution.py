@@ -2,7 +2,7 @@ from sqlalchemy import text
 from src.db import get_engine
 from src.config import DB_PATH
 
-EFFECTIVE_DATE = "2026-02-13"
+EFFECTIVE_DATE = os.getenv("FIRST_REBALANCE_DATE", "2026-01-02")
 AMOUNT = 200.0  # change this
 
 e = get_engine(DB_PATH)

@@ -78,7 +78,7 @@ Alpha Engine automates the quantitative side of a momentum investing strategy: i
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/michaelddickenson/alpha-engine.git
+git clone https://github.com/YOUR_USERNAME/alpha-engine.git
 cd alpha-engine
 
 python3 -m venv .venv
@@ -185,6 +185,12 @@ sudo systemctl enable --now alpha-web
 
 ---
 
+## Screenshots
+
+*Screenshots coming soon.*
+
+---
+
 ## Project Structure
 
 ```
@@ -213,3 +219,9 @@ alpha-engine/
 ├── .env.example            # Environment variable template
 └── requirements.txt
 ```
+
+---
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.

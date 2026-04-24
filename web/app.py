@@ -1012,9 +1012,9 @@ def record():
 BUY, GOOGL, 0.117, 337.12
 SELL, DG, 0.069, 121.56</pre>
       <div class="text-sm text-muted mt-4">
-        <strong>BUYD</strong> = dollar-amount buy (broker dollar-based style)<br>
-        <strong>BUY</strong> = share-count buy<br>
-        <strong>SELL</strong> = sell by shares
+        <strong>BUYD</strong> = position override (dollar amount). Adjusts holdings/avg_cost only; does NOT debit cash or record a fill/lot. Use for reconciliation.<br>
+        <strong>BUY</strong> = share-count buy. Debits cash, records fill and lot.<br>
+        <strong>SELL</strong> = sell by shares. Credits cash, records fill, reduces lots FIFO.
       </div>
     </div>
 
@@ -1141,18 +1141,19 @@ def submit():
                     ON CONFLICT(symbol) DO UPDATE SET shares=excluded.shares, avg_cost=excluded.avg_cost
                 """), {"s": sym, "sh": new_sh, "ac": new_ac})
 
-                conn.execute(text("""
-                    INSERT INTO fills(fill_time_utc, symbol, side, shares, price, fees)
-                    VALUES (:t, :s, 'BUY', :sh, :px, :fees)
-                """), {"t": now_utc, "s": sym, "sh": shares, "px": px, "fees": fees})
+                if action == "BUY":
+                    conn.execute(text("""
+                        INSERT INTO fills(fill_time_utc, symbol, side, shares, price, fees)
+                        VALUES (:t, :s, 'BUY', :sh, :px, :fees)
+                    """), {"t": now_utc, "s": sym, "sh": shares, "px": px, "fees": fees})
 
-                conn.execute(text("""
-                    INSERT INTO lots(symbol, buy_time_utc, shares_remaining, cost_per_share)
-                    VALUES (:s, :t, :sh, :cps)
-                """), {"s": sym, "t": now_utc, "sh": shares, "cps": px})
+                    conn.execute(text("""
+                        INSERT INTO lots(symbol, buy_time_utc, shares_remaining, cost_per_share)
+                        VALUES (:s, :t, :sh, :cps)
+                    """), {"s": sym, "t": now_utc, "sh": shares, "cps": px})
 
-                cash = get_cash(conn)
-                set_cash(conn, cash - dollars - fees)
+                    cash = get_cash(conn)
+                    set_cash(conn, cash - dollars - fees)
 
             elif action == "SELL":
                 shares = float(qty)
@@ -1452,7 +1453,7 @@ def reset_portfolio_form():
     default_fills = """# Paste your holdings below. One per line:
 # SYMBOL, SHARES, AVG_COST_PER_SHARE, BUY_DATE (YYYY-MM-DD)
 # Example:
-# JNJ, 0.245, 242.12, 2026-02-13
+# AAPL, 1.5, 150.00, 2024-01-05
 """
 
     content = f"""
